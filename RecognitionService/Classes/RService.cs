@@ -9,19 +9,22 @@ namespace RecognitionService.Classes
 {
     public class RService : IRecognition
     {
+        private const int Width = 50;
+        private const int Height = 60;
+        private const int DeltaX = 30;
         public async Task<int> ProcessedImages(Bitmap mathExample, Bitmap[] answers)
         {
             try
             {
-                int answer = 0;
-                int[] numbers = new int[answers.Length];
+                var numbers = new List<int>();
                 var dict = JsonParser.GetInfoFromJson();
-                for (int i = 0; i < answers.Length; i++)
+                foreach (Bitmap item in answers)
                 {
-                    numbers[i] = await RecognizeIntFromBmp(answers[i], dict);
+                    var key = await RecognizeIntFromBmp(item, dict);
+                    numbers.Add(key);
                 }
-                answer = numbers[0];
-                return answer;
+                int answer = await ProcessedExampleImage(mathExample, dict);
+                return numbers.IndexOf(answer);
             }
             catch (ApplicationException)
             {
@@ -36,6 +39,22 @@ namespace RecognitionService.Classes
         }
 
         private Task<int> RecognizeIntFromBmp(Bitmap answer, Dictionary<string, List<byte[,]>> dict)
+        {
+            return Task.Run(() =>
+            {
+                var answerByteArray = new byte[Width, Height];
+                for (int i = 0; i < Width; i++)
+                {
+                    for (int j = 0; j < Height; j++)
+                    {
+                        answerByteArray[i, j] = answer.GetPixel(i, j).R;
+                    }
+                }
+                return RecognizeIntFromBmp(answerByteArray, dict);
+            });
+        }
+
+        private Task<int> RecognizeIntFromBmp(byte[,] answer, Dictionary<string, List<byte[,]>> dict)
         {
             return Task.Run(() =>
             {
@@ -54,22 +73,48 @@ namespace RecognitionService.Classes
             });
         }
 
-        private static double CalcMinDistance(Bitmap answer, List<byte[,]> list)
+        private double CalcMinDistance(byte[,] answer, List<byte[,]> list)
         {
             return list.Select(c => CalcDistance(answer, c)).Concat(new[] { double.MaxValue }).Min();
         }
 
-        private static double CalcDistance(Bitmap answer, byte[,] byted)
+        private double CalcDistance(byte[,] answer, byte[,] byted)
         {
             double distance = 0;
-            for (int i = 0; i < answer.Width; ++i)
+            for (int i = 0; i < Width; ++i)
             {
-                for (int j = 0; j < answer.Height; ++j)
+                for (int j = 0; j < Height; ++j)
                 {
-                    distance += Math.Pow(answer.GetPixel(i, j).R - byted[i, j], 2);
+                    distance += Math.Pow(answer[i, j] - byted[i, j], 2);
                 }
             }
             return Math.Pow(distance, 0.5);
         }
+
+        private async Task<int> ProcessedExampleImage(Bitmap example, Dictionary<string, List<byte[,]>> dict)
+        {
+            var defColor = example.GetPixel(0, 0);
+            var numberFirst = new Bitmap(example, Width, Height);
+            for (int i = Width; i < Width + DeltaX; i++)
+            {
+                for (int j = 0; j < Height; j++)
+                {
+                    example.SetPixel(i, j, defColor);
+                }
+            }
+            var firstNumber = await RecognizeIntFromBmp(numberFirst, dict);
+            var secondByted = new byte[Width, Height];
+            int k = 0;
+            for (int i = Width + DeltaX - 10; i < Width + DeltaX - 10 + Width; i++)
+            {
+                for (int j = 0; j < Height; j++)
+                {
+                    secondByted[k,j] = example.GetPixel(i, j).R;
+                }
+                k++;
+            }
+            var secondNumber = await RecognizeIntFromBmp(secondByted, dict);
+            return firstNumber + secondNumber;
+        } 
     }
 }
