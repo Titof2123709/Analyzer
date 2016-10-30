@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinForm.Temp", "WinForm.Temp\WinForm.Temp.csproj", "{2A0B0F4B-FBEB-43B6-B20C-B613A7496399}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{BB239CB2-5CF4-4C78-843C-AA5C00E8CA9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitmapConverter", "BitmapConverter\BitmapConverter.csproj", "{012AFF24-064F-4C47-BF20-23B07480D3D9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{9C77A709-CC93-4D74-B734-EDE6DE016EFD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecognitionService", "RecognitionService\RecognitionService.csproj", "{DA7AAF6C-DC1A-4689-B8D9-C02E6CECC152}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2A0B0F4B-FBEB-43B6-B20C-B613A7496399}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A0B0F4B-FBEB-43B6-B20C-B613A7496399}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A0B0F4B-FBEB-43B6-B20C-B613A7496399}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A0B0F4B-FBEB-43B6-B20C-B613A7496399}.Release|Any CPU.Build.0 = Release|Any CPU
+		{012AFF24-064F-4C47-BF20-23B07480D3D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{012AFF24-064F-4C47-BF20-23B07480D3D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{012AFF24-064F-4C47-BF20-23B07480D3D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{012AFF24-064F-4C47-BF20-23B07480D3D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA7AAF6C-DC1A-4689-B8D9-C02E6CECC152}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA7AAF6C-DC1A-4689-B8D9-C02E6CECC152}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA7AAF6C-DC1A-4689-B8D9-C02E6CECC152}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA7AAF6C-DC1A-4689-B8D9-C02E6CECC152}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2A0B0F4B-FBEB-43B6-B20C-B613A7496399} = {BB239CB2-5CF4-4C78-843C-AA5C00E8CA9F}
+		{012AFF24-064F-4C47-BF20-23B07480D3D9} = {BB239CB2-5CF4-4C78-843C-AA5C00E8CA9F}
+		{DA7AAF6C-DC1A-4689-B8D9-C02E6CECC152} = {9C77A709-CC93-4D74-B734-EDE6DE016EFD}
+	EndGlobalSection
+EndGlobal
