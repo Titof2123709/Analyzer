@@ -31,30 +31,11 @@ namespace WinForm.Temp
             }
         }
 
-        public string Recognition(Bitmap bmp, Bitmap[] etalonsBmp)
+        public async void Recognition(Bitmap bmp, Bitmap[] etalonsBmp)
         {
-            //int countImages = 1,
-            //    countEtalons = etalonsBmp.Length;
-            //double[][] arraySum = new double[1][];
-            //for (int i = 0; i < countImages; ++i)
-            //{
-            //    arraySum[i] = new double[countEtalons];
-            //    for (int j = 0; j < countEtalons; ++j)
-            //    {
-            //        arraySum[i][j] = Coord(bmp, etalonsBmp[j]);
-            //    }
-            //}
-            //int index = 0;
-            //string result = string.Empty;
-            //while (index < countImages)
-            //{
-            //    result += arraySum[index].Min();
-            //    index++;
-            //}
-            //return result;
             var service = new RService();
-            var answer = service.ProcessedImages(_image, _etalon);
-            return answer.ToString();
+            var answer = await service.ProcessedImages(_image, _etalon);
+            MessageBox.Show(answer.ToString());
         }
 
         private static double Coord(Bitmap first, Bitmap second)
@@ -94,8 +75,7 @@ namespace WinForm.Temp
 
         private void buttonRecognition_Click(object sender, EventArgs e)
         {
-            var result = Recognition(_image, _etalon);
-            MessageBox.Show(result);
+            Recognition(_image, _etalon);
         }
     }
 }

@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using RecognitionService.Interfaces;
 
 namespace RecognitionService.Classes
 {
     public class RService : IRecognition
     {
-        public int ProcessedImages(Bitmap mathExample, Bitmap[] answers)
+        public async Task<int> ProcessedImages(Bitmap mathExample, Bitmap[] answers)
         {
             try
             {
@@ -18,8 +18,9 @@ namespace RecognitionService.Classes
                 var dict = JsonParser.GetInfoFromJson();
                 for (int i = 0; i < answers.Length; i++)
                 {
-                    numbers[i] = RecognizeIntFromBmp(answers[i], dict);
+                    numbers[i] = await RecognizeIntFromBmp(answers[i], dict);
                 }
+                answer = numbers[0];
                 return answer;
             }
             catch (ApplicationException)
@@ -34,20 +35,23 @@ namespace RecognitionService.Classes
             }
         }
 
-        private int RecognizeIntFromBmp(Bitmap answer, Dictionary<string, List<byte[,]>> dict)
+        private Task<int> RecognizeIntFromBmp(Bitmap answer, Dictionary<string, List<byte[,]>> dict)
         {
-            int number = 0;
-            double minDist = double.MaxValue;
-            foreach (var item in dict)
+            return Task.Run(() =>
             {
-                var distMin = CalcMinDistance(answer, item.Value);
-                if (minDist > distMin)
+                int number = 0;
+                double minDist = double.MaxValue;
+                foreach (var item in dict)
                 {
-                    minDist = distMin;
-                    number = int.Parse(item.Key);
+                    var distMin = CalcMinDistance(answer, item.Value);
+                    if (minDist > distMin)
+                    {
+                        minDist = distMin;
+                        number = int.Parse(item.Key);
+                    }
                 }
-            }
-            return number;
+                return number;
+            });
         }
 
         private static double CalcMinDistance(Bitmap answer, List<byte[,]> list)
