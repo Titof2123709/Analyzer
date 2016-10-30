@@ -24,7 +24,8 @@ namespace RecognitionService.Classes
                     numbers.Add(key);
                 }
                 int answer = await ProcessedExampleImage(mathExample, dict);
-                return numbers.IndexOf(answer);
+                //return numbers.IndexOf(answer);
+                return answer;
             }
             catch (ApplicationException)
             {
@@ -94,7 +95,9 @@ namespace RecognitionService.Classes
         private async Task<int> ProcessedExampleImage(Bitmap example, Dictionary<string, List<byte[,]>> dict)
         {
             var defColor = example.GetPixel(0, 0);
-            var numberFirst = new Bitmap(example, Width, Height);
+            var firstByted = new byte[Width, Height];
+            CreateBytedArray(example, firstByted);
+            var firstNumber = await RecognizeIntFromBmp(firstByted, dict);
             for (int i = Width; i < Width + DeltaX; i++)
             {
                 for (int j = 0; j < Height; j++)
@@ -102,19 +105,29 @@ namespace RecognitionService.Classes
                     example.SetPixel(i, j, defColor);
                 }
             }
-            var firstNumber = await RecognizeIntFromBmp(numberFirst, dict);
             var secondByted = new byte[Width, Height];
             int k = 0;
             for (int i = Width + DeltaX - 10; i < Width + DeltaX - 10 + Width; i++)
             {
                 for (int j = 0; j < Height; j++)
                 {
-                    secondByted[k,j] = example.GetPixel(i, j).R;
+                    secondByted[k, j] = example.GetPixel(i, j).R;
                 }
                 k++;
             }
             var secondNumber = await RecognizeIntFromBmp(secondByted, dict);
             return firstNumber + secondNumber;
-        } 
+        }
+
+        private void CreateBytedArray(Bitmap example, byte[,] firstByted)
+        {
+            for (int i = 0; i < Width; i++)
+            {
+                for (int j = 0; j < Height; j++)
+                {
+                    firstByted[i, j] = example.GetPixel(i, j).R;
+                }
+            }
+        }
     }
 }

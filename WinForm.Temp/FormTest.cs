@@ -9,7 +9,7 @@ namespace WinForm.Temp
 {
     public partial class FormTest : Form
     {
-        private Bitmap _image;
+        private Bitmap[] _image = new Bitmap[30];
         private Bitmap[] _etalon = new Bitmap[30];
         public FormTest()
         {
@@ -22,20 +22,29 @@ namespace WinForm.Temp
             {
                 dlg.Title = Resources.OpenImage;
                 dlg.Filter = Resources.TypesImages;
-
+                dlg.Multiselect = true;
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
-                    pictureBoxNumber.Image = new Bitmap(dlg.FileName);
-                    _image = new Bitmap(dlg.FileName);
+                    var index = 0;
+                    _image = new Bitmap[dlg.FileNames.Length];
+                    foreach (var item in dlg.FileNames)
+                    {
+                        _image[index] = new Bitmap(item);
+                        index++;
+                    }
                 }
             }
         }
 
-        public async void Recognition(Bitmap bmp, Bitmap[] etalonsBmp)
+        public async void Recognition()
         {
             var service = new RService();
-            var answer = await service.ProcessedImages(_image, _etalon);
-            MessageBox.Show(answer.ToString());
+            dataGridView.RowTemplate.Height = 50;
+            foreach (var item in _image)
+            {
+                var answer = await service.ProcessedImages(item, _etalon);
+                dataGridView.Rows.Add(item, answer);
+            }
         }
 
         private static double Coord(Bitmap first, Bitmap second)
@@ -68,14 +77,13 @@ namespace WinForm.Temp
                         _etalon[index] = new Bitmap(item);
                         index++;
                     }
-                    MessageBox.Show(index.ToString());
                 }
             }
         }
 
         private void buttonRecognition_Click(object sender, EventArgs e)
         {
-            Recognition(_image, _etalon);
+            Recognition();
         }
     }
 }
